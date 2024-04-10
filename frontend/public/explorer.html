@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Blockchain Explorer</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <!-- Additional navigation items can go here -->
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-3">Blockchain Explorer</h2>
+
+    <div id="latestBlocks" class="mb-4">
+        <h4>Latest Blocks</h4>
+        <!-- Placeholder for latest blocks. JavaScript will populate this area. -->
+    </div>
+
+    <div id="latestTransactions" class="mb-4">
+        <h4>Latest Transactions</h4>
+        <!-- Placeholder for latest transactions. JavaScript will populate this area. -->
+    </div>
+
+    <div id="blockInformation" class="mb-4">
+        <h4>Block Information</h4>
+        <!-- Placeholder for specific block information. JavaScript will populate this area based on user input or selection. -->
+    </div>
+
+    <div id="transactionInformation" class="mb-4">
+        <h4>Transaction Information</h4>
+        <!-- Placeholder for specific transaction details. JavaScript will populate this area. -->
+    </div>
+
+    <div id="balanceInformation" class="mb-4">
+        <h4>Balance Information</h4>
+        <!-- Placeholder for balance information. JavaScript will populate this area. -->
+    </div>
+
+    <div id="transactionHistory" class="mb-4">
+        <h4>Transaction History</h4>
+        <!-- Placeholder for the transaction history of a specific address/key. JavaScript will populate this area. -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="../src/js/explorer.js"></script>
+
+</body>
+</html>

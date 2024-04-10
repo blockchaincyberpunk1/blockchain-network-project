@@ -1,0 +1,144 @@
+/* Base Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border-radius: 8px;
+}
+
+/* Header */
+.header {
+    background: #0062cc;
+    color: #fff;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 4px solid #004ba0;
+}
+
+/* Navigation */
+.nav {
+    background: #007bff;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid #0062cc;
+}
+
+.nav a {
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.nav a:hover, .nav a.active {
+    background: #0056b3;
+    border-radius: 5px;
+}
+
+/* Main Content Styles */
+.main-content {
+    padding: 20px;
+    background: #f4f4f4;
+    min-height: 600px; /* Adjust based on content */
+    border-radius: 8px;
+}
+
+/* Wallet Styles */
+.wallet {
+    padding: 20px;
+    background: #e7e9ed;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.wallet h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+/* Miner Styles */
+.miner {
+    padding: 20px;
+    background: #ddeaf6;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.miner h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+/* Block Explorer Styles */
+.block-explorer {
+    padding: 20px;
+    background: #f0ead6;
+    border-radius: 5px;
+}
+
+.block-explorer h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+/* Transaction Styles */
+.transaction {
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-left: 5px solid #007bff;
+    border-radius: 5px;
+}
+
+.transaction:hover {
+    background: #f9f9f9;
+}
+
+/* Footer */
+.footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+    clear: both;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header, .nav, .main-content, .wallet, .miner, .block-explorer, .transaction {
+        padding: 10px;
+    }
+
+    .nav {
+        flex-direction: column;
+    }
+
+    .nav a {
+        margin-bottom: 5px;
+    }
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
