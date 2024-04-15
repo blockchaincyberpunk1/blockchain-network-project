@@ -1,82 +1,96 @@
 /**
- * wallet.js
- * Manages wallet interactions on wallet.html, such as creating wallets, sending transactions, and viewing balances.
- * Depends on backend files: walletController.js for wallet operations and blockchainController.js for blockchain interactions.
+ * @file wallet.js
+ * Handles wallet operations such as creating a new wallet, signing transactions, and checking wallet balance.
+ * Dependencies: blockchain.js for making API requests to the backend.
  */
 
 /**
- * Initializes the wallet page functionalities, binds event listeners, and loads initial data.
+ * Creates a new wallet and displays the wallet details.
  */
-function initializeWalletPage() {
-    loadWalletBalance();
-    bindSendTransactionForm();
-    loadTransactionHistory();
+async function createWallet() {
+  try {
+    const response = await fetch("/api/wallet/create", { method: "POST" });
+    if (!response.ok) {
+      throw new Error("Failed to create a new wallet");
+    }
+    const walletDetails = await response.json();
+    displayWalletDetails(walletDetails);
+  } catch (error) {
+    console.error("Error creating wallet:", error.message);
+    alert("Error creating wallet: " + error.message);
+  }
 }
 
 /**
- * Loads and displays the wallet balance by calling the backend walletController's getBalance API.
+ * Signs a transaction using the user's private key and sends it to the backend.
+ * @param {string} fromAddress The sender's wallet address.
+ * @param {string} toAddress The recipient's wallet address.
+ * @param {number} amount The amount to transfer.
+ * @param {string} privateKey The private key for signing the transaction.
  */
-function loadWalletBalance() {
-    // Replace 'walletAddress' with the actual wallet address of the user.
-    fetch(`/api/wallet/balance/${walletAddress}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.balance) {
-                document.getElementById('walletBalance').textContent = `${data.balance} BTC`;
-            }
-        })
-        .catch(error => console.error('Error loading wallet balance:', error));
-}
+async function sendTransaction(fromAddress, toAddress, amount, privateKey) {
+  const transactionData = { fromAddress, toAddress, amount, privateKey };
 
-/**
- * Binds the send transaction form submission to the backend createTransaction API.
- */
-function bindSendTransactionForm() {
-    const form = document.getElementById('sendTransactionForm');
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-        const recipientAddress = document.getElementById('recipientAddress').value;
-        const amount = document.getElementById('amount').value;
-
-        // Construct the transaction data
-        const transactionData = { recipientAddress, amount };
-
-        // Send the transaction data to the backend
-        fetch('/api/wallet/transaction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(transactionData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Transaction successful:', data);
-            // Reload the wallet balance and transaction history
-            loadWalletBalance();
-            loadTransactionHistory();
-        })
-        .catch(error => console.error('Error sending transaction:', error));
+  try {
+    const response = await fetch("/api/wallet/transaction", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(transactionData),
     });
+    if (!response.ok) {
+      throw new Error("Failed to send transaction");
+    }
+    const transactionResponse = await response.json();
+    alert("Transaction successful: " + transactionResponse.message);
+  } catch (error) {
+    console.error("Error sending transaction:", error.message);
+    alert("Error sending transaction: " + error.message);
+  }
 }
 
 /**
- * Loads and displays the transaction history by calling the backend blockchainController's getTransactionHistory API.
+ * Retrieves and displays the balance of a given wallet address.
+ * @param {string} address The wallet address whose balance is to be checked.
  */
-function loadTransactionHistory() {
-    // Replace 'walletAddress' with the actual wallet address of the user.
-    fetch(`/api/blockchain/transactionHistory/${walletAddress}`)
-        .then(response => response.json())
-        .then(data => {
-            const historyElement = document.getElementById('transactionHistory');
-            historyElement.innerHTML = ''; // Clear existing history
-            data.transactions.forEach(transaction => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item');
-                listItem.textContent = `To: ${transaction.recipient} - Amount: ${transaction.amount} BTC`;
-                historyElement.appendChild(listItem);
-            });
-        })
-        .catch(error => console.error('Error loading transaction history:', error));
+async function checkBalance(address) {
+  try {
+    const response = await fetch(`/api/wallet/balance/${address}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch wallet balance");
+    }
+    const { balance } = await response.json();
+    alert(`Balance for ${address} is ${balance}`);
+  } catch (error) {
+    console.error("Error fetching wallet balance:", error.message);
+    alert("Error fetching wallet balance: " + error.message);
+  }
 }
 
-// Call initializeWalletPage when the script loads
-initializeWalletPage();
+/**
+ * Displays wallet details to the user.
+ * @param {Object} walletDetails The wallet details to display.
+ */
+function displayWalletDetails(walletDetails) {
+  // Assuming there's a div with id 'walletInfo' in the HTML
+  const walletInfoDiv = document.getElementById("walletInfo");
+  walletInfoDiv.innerHTML = `
+        <p>Wallet Address: ${walletDetails.publicKey}</p>
+        <p>Private Key: ${walletDetails.privateKey}</p>
+    `;
+}
+
+// Event listeners for wallet actions
+document
+  .getElementById("createWalletBtn")
+  .addEventListener("click", createWallet);
+document.getElementById("sendTransactionBtn").addEventListener("click", () => {
+  const fromAddress = document.getElementById("fromAddress").value;
+  const toAddress = document.getElementById("toAddress").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const privateKey = document.getElementById("privateKey").value;
+  sendTransaction(fromAddress, toAddress, amount, privateKey);
+});
+document.getElementById("checkBalanceBtn").addEventListener("click", () => {
+  const address = document.getElementById("balanceAddress").value;
+  checkBalance(address);
+});

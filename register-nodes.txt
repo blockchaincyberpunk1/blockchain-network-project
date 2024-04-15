@@ -1,0 +1,13 @@
+{
+  "nodeUrl": "http://localhost:3001"
+}
+
+
+{
+  "nodeUrl": "http://localhost:3002"
+}
+
+
+{
+  "nodeUrl": "http://localhost:3003"
+}

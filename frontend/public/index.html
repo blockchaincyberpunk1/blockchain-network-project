@@ -1,93 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Required meta tags for Bootstrap -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSLNuPhViQCeFp1Cj7iGcwuVGOnnDnjRTZiFVq" crossorigin="anonymous">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="src/css/main.css">
-
-    <title>Blockchain Project</title>
-</head>
-<body>
-
-<!-- Navigation bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Blockchain Network</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="wallet.html">Wallet</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="miner.html">Miner</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="explorer.html">Explorer</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="faucet.html">Faucet</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<!-- Main content area -->
-<div class="container mt-5">
-    <h1>Welcome to the Blockchain Network</h1>
-    <p>This is the main entry point for the Blockchain application. Navigate using the menu to access different functionalities.</p>
-    
-    <!-- Featurettes/Highlights Section -->
-    <div class="row featurette mt-4">
-        <div class="col-md-7">
-            <h2 class="featurette-heading">Fast Transactions. <span class="text-muted">See for yourself.</span></h2>
-            <p class="lead">Experience ultra-fast transaction times and high throughput. Say goodbye to waiting and hello to instant blockchain transactions.</p>
-        </div>
-        <div class="col-md-5">
-            <img class="featurette-image img-fluid mx-auto" src="path_to_your_image" alt="Generic placeholder image">
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blockchain Dashboard</title>
+    <!-- Bootstrap CSS from CDN -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="./src/css/styles.css" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Blockchain Dashboard</h1>
+      <div id="blockchainInfo" class="alert alert-info">
+        Loading blockchain information...
+      </div>
+      <h2>Latest Blocks</h2>
+      <div id="latestBlocks" class="list-group">
+        <!-- Latest blocks will be inserted here -->
+      </div>
     </div>
 
-    <hr class="featurette-divider">
+    <!-- Bootstrap JS, Popper.js, and jQuery, all from CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom script to load blockchain data -->
+    <script src="./src/js/blockchain.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const blockchainData = await fetchBlockchain();
+          const blockchainInfoEl = document.getElementById("blockchainInfo");
+          const latestBlocksEl = document.getElementById("latestBlocks");
 
-    <div class="row featurette">
-        <div class="col-md-7 order-md-2">
-            <h2 class="featurette-heading">Decentralized and Secure. <span class="text-muted">Trust in technology.</span></h2>
-            <p class="lead">Built with decentralization at its core, our blockchain network ensures security and trust without the need for intermediaries.</p>
-        </div>
-        <div class="col-md-5 order-md-1">
-            <img class="featurette-image img-fluid mx-auto" src="path_to_your_image" alt="Generic placeholder image">
-        </div>
-    </div>
+          // Display general blockchain information
+          blockchainInfoEl.textContent = `Current blockchain length: ${blockchainData.length} blocks.`;
 
-    <hr class="featurette-divider">
-
-    <!-- Call to Action Section -->
-    <div class="row mt-4 mb-4">
-        <div class="col-md-12 text-center">
-            <h2>Join the Network</h2>
-            <p>Become part of a growing ecosystem revolutionizing the way we think about digital assets and transactions. Get started now.</p>
-            <p><a class="btn btn-lg btn-primary" href="wallet.html" role="button">Create a Wallet</a></p>
-        </div>
-    </div>
-</div>
-
-
-<!-- Bootstrap JS, Popper.js, and jQuery CDN links for Bootstrap functionality -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-ZRP+KONMbSw2ZC3rFbhwKYOS3CkZQFRbCaAOvVeaLb8aZlMdIHe3z5iaz0Ek2JGg" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck4SOF4y4Ck4C2DgHfViXydVeLm+JDM" crossorigin="anonymous"></script>
-<script src="../src/js/blockchain.js"></script>
-
-</body>
+          // List latest blocks
+          blockchainData.slice(-5).forEach((block) => {
+            const blockEl = document.createElement("a");
+            blockEl.classList.add("list-group-item", "list-group-item-action");
+            blockEl.href = `#block-${block.index}`;
+            blockEl.textContent = `Block ${block.index}: ${block.hash.substring(
+              0,
+              20
+            )}...`;
+            latestBlocksEl.appendChild(blockEl);
+          });
+        } catch (error) {
+          console.error("Failed to load blockchain data:", error);
+          document.getElementById("blockchainInfo").textContent =
+            "Failed to load blockchain information.";
+        }
+      });
+    </script>
+  </body>
 </html>

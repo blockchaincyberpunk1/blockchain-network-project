@@ -3,6 +3,9 @@ node_modules/
 
 # Environment configuration files
 .env
+.env.node1
+.env.node2
+.env.node3
 .env.local
 .env.development.local
 .env.test.local

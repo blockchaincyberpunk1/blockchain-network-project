@@ -40,9 +40,11 @@ winston.addColors(customLevels.colors);
 const logger = winston.createLogger({
   levels: customLevels.levels,
   format: winston.format.combine(
+    winston.format.colorize(),
     winston.format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",
     }),
+    winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
     winston.format.errors({ stack: true }), // Captures stack trace in error logs
     winston.format.splat(),
     winston.format.json()

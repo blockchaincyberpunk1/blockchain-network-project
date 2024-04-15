@@ -1,84 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blockchain Wallet Interface</title>
+    <!-- Include Bootstrap CSS from CDN for styling -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Link to the main stylesheet -->
+    <link rel="stylesheet" href="src/css/main.css" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2>Blockchain Wallet</h2>
 
-    <!-- Bootstrap CSS CDN for responsive and modern styling -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSLNuPhViQCeFp1Cj7iGcwuVGOnnDnjRTZiFVq" crossorigin="anonymous">
-
-    <title>Blockchain Wallet</title>
-</head>
-<body>
-
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Blockchain Wallet</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Wallet <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="explorer.html">Explorer</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="faucet.html">Faucet</a>
-            </li>
-            <!-- Add other navigation links as needed -->
-        </ul>
-    </div>
-</nav>
-
-<!-- Main Content Area -->
-<div class="container mt-4">
-    <h2 class="mb-3">My Wallet</h2>
-
-    <!-- Wallet Balance Section -->
-    <div class="card mb-3">
-        <div class="card-header">Wallet Balance</div>
+      <!-- Section to create a new wallet -->
+      <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Balance: <span id="walletBalance">0.00</span> BTC</h5>
-            <p class="card-text">This balance is updated in real-time as transactions are confirmed on the blockchain.</p>
+          <h5 class="card-title">Create a New Wallet</h5>
+          <button id="createWalletBtn" class="btn btn-primary">
+            Create Wallet
+          </button>
         </div>
-    </div>
+      </div>
 
-    <!-- Send Transaction Form -->
-    <div class="card mb-3">
-        <div class="card-header">Send Transaction</div>
+      <!-- Section to send a transaction -->
+      <div class="card mt-4">
         <div class="card-body">
-            <form id="sendTransactionForm">
-                <div class="form-group">
-                    <label for="recipientAddress">Recipient Address</label>
-                    <input type="text" class="form-control" id="recipientAddress" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" class="form-control" id="amount" step="0.00000001" min="0" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
+          <h5 class="card-title">Send Transaction</h5>
+          <div class="form-group">
+            <label for="fromAddress">From Address:</label>
+            <input type="text" id="fromAddress" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="toAddress">To Address:</label>
+            <input type="text" id="toAddress" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="privateKey">Private Key:</label>
+            <input type="text" id="privateKey" class="form-control" />
+          </div>
+          <button id="sendTransactionBtn" class="btn btn-success">
+            Send Transaction
+          </button>
         </div>
+      </div>
+
+      <!-- Section to check wallet balance -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">Check Wallet Balance</h5>
+          <div class="form-group">
+            <label for="balanceAddress">Wallet Address:</label>
+            <input type="text" id="balanceAddress" class="form-control" />
+          </div>
+          <button id="checkBalanceBtn" class="btn btn-info">
+            Check Balance
+          </button>
+        </div>
+      </div>
+
+      <!-- Div to display wallet info after creation -->
+      <div class="card mt-4">
+        <div class="card-body" id="walletInfo">
+          <h5 class="card-title">Wallet Information</h5>
+          <!-- Wallet information will be displayed here -->
+        </div>
+      </div>
     </div>
 
-    <!-- Transaction History Section -->
-    <div class="card">
-        <div class="card-header">Transaction History</div>
-        <ul class="list-group list-group-flush" id="transactionHistory">
-            <!-- Dynamically generated list items for each transaction -->
-        </ul>
-    </div>
-</div>
-
-<!-- Bootstrap JS, Popper.js, and jQuery for interactivity and components -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-ZRP+KONMbSw2ZC3rFbhwKYOS3CkZQFRbCaAOvVeaLb8aZlMdIHe3z5iaz0Ek2JGg" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck4SOF4y4Ck4C2DgHfViXydVeLm+JDM" crossorigin="anonymous"></script>
-<script src="../src/js/wallet.js"></script>
-
-</body>
+    <!-- Include the blockchain and wallet JavaScript files -->
+    <script src="src/js/blockchain.js"></script>
+    <script src="src/js/wallet.js"></script>
+  </body>
 </html>

@@ -1,10 +1,9 @@
-const logger = require("../logger"); // Adjust this path to your logger's actual location
+const logger = require("../lib/logger");
 
 /**
- * Error handling middleware for Express applications. It captures runtime and operational errors,
- * logs them for debugging purposes, and formats a client-safe error message.
- * It distinguishes between operational errors (expected errors in the application flow) and
- * programming errors (unexpected errors), ensuring that the latter do not leak sensitive information.
+ * Middleware for handling exceptions and errors in an Express application. It logs errors,
+ * determines the nature of the error (operational vs. programming), and sends appropriate
+ * responses to the client to prevent sensitive information leakage.
  *
  * @param {Error} err - The error object caught by the middleware.
  * @param {Request} req - The Express request object, providing context about the request that led to the error.
@@ -12,7 +11,7 @@ const logger = require("../logger"); // Adjust this path to your logger's actual
  * @param {NextFunction} next - The next middleware function in the Express stack.
  */
 const errorMiddleware = (err, req, res, next) => {
-  // Log the error in detail for internal diagnostics
+  // Detailed logging for internal diagnostics
   logger.error(`Error processing request ${req.method} ${req.path}`, {
     error: {
       message: err.message,
@@ -27,33 +26,34 @@ const errorMiddleware = (err, req, res, next) => {
     },
   });
 
-  // Operational errors are known errors that we have coded for in the application flow
+  // Identify if the error is operational (expected) or programming (unexpected)
   const isOperationalError = err.isOperational || false;
 
+  // Default to 500 server error unless specified
   const statusCode = err.statusCode || 500;
+  // Use specific message if operational, generic message otherwise
   const message = isOperationalError
     ? err.message
     : "An unexpected error occurred. Please try again later.";
 
-  // For non-operational errors, you might not want to send the error stack to the client in production
-  // This is for debugging unexpected errors during development
+  // Debug information in development mode
   const responsePayload = { error: message };
   if (!isOperationalError && process.env.NODE_ENV === "development") {
     responsePayload.stack = err.stack;
   }
 
-  // Send a generic error message for non-operational errors to avoid leaking any sensitive information
+  // Send the appropriate error response
   res.status(statusCode).send(responsePayload);
 };
 
 /**
- * A factory function for creating error objects that are marked as operational.
- * This is useful for creating errors that are expected within the application's operation,
- * such as validation errors, not found errors, etc., which do not indicate a bug in the system.
+ * Factory function to create an operational error. These are typically known errors
+ * within the application logic (e.g., validation errors, resource not found errors),
+ * and they are not indicative of an underlying bug.
  *
- * @param {string} message - The error message.
- * @param {number} statusCode - The HTTP status code appropriate for this error.
- * @returns {Error} - The customized error object.
+ * @param {string} message - Descriptive error message.
+ * @param {number} statusCode - HTTP status code appropriate for the error.
+ * @returns {Error} - An error object flagged as operational with a specific status code.
  */
 const createOperationalError = (message, statusCode) => {
   const error = new Error(message);

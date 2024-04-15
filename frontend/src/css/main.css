@@ -1,144 +1,67 @@
-/* Base Styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+/* main.css - Main stylesheet for the Blockchain Network Dashboard */
+
+/* General body styling */
+body {
+    background-color: #f4f4f4; /* Light grey background for slight contrast */
+    color: #333; /* Dark grey text for readability */
+    font-family: 'Arial', sans-serif; /* Common, readable font */
 }
 
+/* Header styles */
+h1, h2 {
+    color: #007bff; /* Bootstrap primary blue for headings */
+}
+
+/* Dashboard container for better spacing */
 .container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background: #fff;
-    border-radius: 8px;
+    padding-top: 20px;
+    padding-bottom: 40px;
 }
 
-/* Header */
-.header {
-    background: #0062cc;
-    color: #fff;
-    padding: 20px 0;
-    font-size: 24px;
-    font-weight: bold;
-    border-bottom: 4px solid #004ba0;
+/* Styling for blockchain info alert box */
+.alert-info {
+    background-color: #d1ecf1; /* Light blue background for info alerts */
+    color: #0c5460; /* Dark blue text to match the background */
+    border: 1px solid #bee5eb; /* Slightly darker border for definition */
 }
 
-/* Navigation */
-.nav {
-    background: #007bff;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    border-bottom: 2px solid #0062cc;
+/* List group styling for showing blocks or transactions */
+.list-group-item {
+    background-color: #fff; /* White background for items */
+    border: 1px solid #ddd; /* Light grey border for each item */
+    margin-bottom: 5px; /* Spacing between items */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.nav a {
-    color: #fff;
-    padding: 10px 15px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+.list-group-item:hover {
+    background-color: #f8f9fa; /* Slightly darker background on hover */
 }
 
-.nav a:hover, .nav a.active {
-    background: #0056b3;
-    border-radius: 5px;
+/* Custom button styling, if needed */
+.btn-custom {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff; /* White text for contrast */
+    border-radius: 5px; /* Rounded corners */
+    border: none; /* No border */
+    padding: 10px 20px; /* Top/bottom and left/right padding */
+    text-transform: uppercase; /* Uppercase text for emphasis */
+    letter-spacing: 1px; /* Spacing between letters for readability */
 }
 
-/* Main Content Styles */
-.main-content {
-    padding: 20px;
-    background: #f4f4f4;
-    min-height: 600px; /* Adjust based on content */
-    border-radius: 8px;
+.btn-custom:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
-/* Wallet Styles */
-.wallet {
-    padding: 20px;
-    background: #e7e9ed;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-.wallet h2 {
-    color: #333;
-    margin-top: 0;
-}
-
-/* Miner Styles */
-.miner {
-    padding: 20px;
-    background: #ddeaf6;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-.miner h2 {
-    color: #333;
-    margin-top: 0;
-}
-
-/* Block Explorer Styles */
-.block-explorer {
-    padding: 20px;
-    background: #f0ead6;
-    border-radius: 5px;
-}
-
-.block-explorer h2 {
-    color: #333;
-    margin-top: 0;
-}
-
-/* Transaction Styles */
-.transaction {
-    background: #fff;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-left: 5px solid #007bff;
-    border-radius: 5px;
-}
-
-.transaction:hover {
-    background: #f9f9f9;
-}
-
-/* Footer */
-.footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
-    margin-top: 20px;
-    clear: both;
-}
-
-/* Responsive Design */
+/* Responsive media queries for different devices */
 @media (max-width: 768px) {
-    .header, .nav, .main-content, .wallet, .miner, .block-explorer, .transaction {
-        padding: 10px;
-    }
-
-    .nav {
-        flex-direction: column;
-    }
-
-    .nav a {
-        margin-bottom: 5px;
+    .container {
+        padding: 10px; /* Reduced padding on smaller screens */
     }
 }
 
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-20 {
-    margin-top: 20px;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
+@media (max-width: 480px) {
+    h1, h2 {
+        font-size: 1.5em; /* Smaller text on very small screens */
+    }
 }

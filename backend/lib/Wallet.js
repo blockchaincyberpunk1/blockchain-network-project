@@ -4,110 +4,77 @@
  */
 
 const crypto = require("crypto");
-const elliptic = require("elliptic"); // Using Elliptic for ECC
-const EC = new elliptic.ec("secp256k1"); // Bitcoin's elliptic curve
-const Transaction = require("./Transaction");
-const blockchain = require("./Blockchain"); // Assuming this is a reference to your blockchain instance
+const { signData, verifySignature, hashSHA256 } = require("./crypto");
+const EC = require("elliptic").ec;
+const ec = new EC("secp256k1"); // Using secp256k1 elliptic curve, same as Bitcoin
 
+/**
+ * Represents a Wallet in the blockchain network.
+ * Provides functionalities for key pair generation, transaction signing, and verification.
+ */
 class Wallet {
   /**
-   * Constructs a new Wallet instance with a new key pair or from an existing private key.
-   * @param {string} [privateKey] - Optional private key. If provided, the wallet initializes with this key; otherwise, generates a new one.
+   * Constructs a Wallet instance. If a private key is provided, the wallet is initialized with it.
+   * Otherwise, a new key pair is generated.
+   * @param {string} [privateKey] - The private key for an existing wallet.
    */
-  constructor(privateKey) {
-    this.keyPair = privateKey ? EC.keyFromPrivate(privateKey) : EC.genKeyPair();
-    this.publicKey = this.keyPair.getPublic("hex");
+  constructor(privateKey = "") {
+    this.keyPair = privateKey ? ec.keyFromPrivate(privateKey) : ec.genKeyPair();
   }
 
   /**
-   * Generates a secure random seed and derives a key pair from it.
-   * @returns {Object} An object containing the public and private keys.
+   * Generates a new cryptographic key pair for a wallet.
+   * @returns {Wallet} A new Wallet instance with a generated key pair.
    */
-  static generateSecureKeyPair() {
-    const seed = crypto.randomBytes(32); // Secure random seed
-    const keyPair = EC.keyFromPrivate(seed); // Deriving key pair from seed
-    return {
-      publicKey: keyPair.getPublic("hex"),
-      privateKey: keyPair.getPrivate("hex"),
-    };
+  static generate() {
+    return new Wallet();
   }
 
   /**
-   * Signs a transaction with the wallet's private key.
-   * @param {Transaction} transaction - The transaction to sign.
+   * Returns the public key of the wallet.
+   * @returns {string} The public key in hexadecimal format.
    */
-  signTransaction(transaction) {
-    if (transaction.fromAddress !== this.publicKey) {
-      throw new Error("You cannot sign transactions for other wallets!");
+  get publicKey() {
+    return this.keyPair.getPublic().encode("hex");
+  }
+
+  /**
+   * Signs a hash of data with the wallet's private key.
+   * @param {string} dataHash - The hash of the data to sign.
+   * @returns {string} The signature in hexadecimal format.
+   */
+  sign(dataHash) {
+    if (!dataHash) {
+      throw new Error("Data to sign is required");
     }
-    const hashTx = transaction.calculateHash();
-    const sig = this.keyPair.sign(hashTx, "base64");
-    transaction.signature = sig.toDER("hex");
+    const signature = this.keyPair.sign(dataHash);
+    return signature.toDER("hex");
   }
 
   /**
-   * Calculates and returns the wallet's balances.
-   * @param {Blockchain} blockchain - The blockchain instance to calculate the balance from.
-   * @returns {Object} An object containing confirmed, pending, and available balances.
+   * Verifies a signature against the hash of data using the wallet's public key.
+   * @param {string} dataHash - The hash of the data that was signed.
+   * @param {string} signature - The signature in hexadecimal format.
+   * @returns {boolean} True if the signature is valid, otherwise false.
    */
-  calculateBalances(blockchain) {
-    let confirmedBalance = 0;
-    let pendingBalance = 0;
-
-    for (const block of blockchain.chain) {
-      for (const transaction of block.transactions) {
-        // Check for received transactions
-        if (transaction.toAddress === this.publicKey) {
-          confirmedBalance += transaction.amount;
-        }
-
-        // Check for sent transactions
-        if (transaction.fromAddress === this.publicKey) {
-          confirmedBalance -= transaction.amount;
-        }
-      }
-    }
-
-    // Iterate through pending transactions
-    for (const transaction of blockchain.pendingTransactions) {
-      if (transaction.fromAddress === this.publicKey) {
-        pendingBalance -= transaction.amount;
-      }
-    }
-
-    const availableBalance = confirmedBalance - pendingBalance;
-    return {
-      confirmedBalance,
-      pendingBalance,
-      availableBalance,
-    };
-  }
-
-  /**
-   * Creates a transaction and signs it.
-   * @param {string} toAddress - Recipient's public key/address.
-   * @param {number} amount - Amount to send.
-   * @returns {Transaction} The signed transaction.
-   */
-  createTransaction(toAddress, amount) {
-    if (!toAddress || amount <= 0) {
+  static verifySignature(dataHash, signature, publicKey) {
+    if (!dataHash || !signature || !publicKey) {
       throw new Error(
-        "Transaction must include to address and amount greater than 0."
+        "Data hash, signature, and public key are required for verification"
       );
     }
-
-    const transaction = new Transaction(this.publicKey, toAddress, amount);
-    this.signTransaction(transaction);
-    return transaction;
+    const key = ec.keyFromPublic(publicKey, "hex");
+    return key.verify(dataHash, signature);
   }
 
   /**
-   * Static method to create a Wallet instance from a private key.
-   * @param {string} privateKey - Private key in hex format.
-   * @returns {Wallet} A new Wallet instance.
+   * Utility function to hash data for signing. This is a wrapper around the hashing utility to maintain
+   * abstraction within the Wallet class.
+   * @param {string} data - The data to hash.
+   * @returns {string} The hash of the data.
    */
-  static fromPrivateKey(privateKey) {
-    return new Wallet(privateKey);
+  static hashData(data) {
+    return hashSHA256(data);
   }
 }
 

@@ -1,34 +1,41 @@
 /**
  * @file app.js
- * @description Initializes an Express server with integrated Socket.IO and JWT authentication for secure real-time communication.
- * Incorporates Morgan for logging HTTP requests and Winston for application-wide logging to aid in monitoring and debugging.
+ * @description Initializes an Express server with integrated middleware, handles routes for a blockchain application,
+ * and establishes a MongoDB connection using Mongoose. This setup includes logging with Morgan and handles real-time
+ * interactions with Socket.IO.
  */
 
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const morgan = require("morgan");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
-// Custom imports for logging and error handling
-const logger = require("./lib/logger"); // Adjust the path as necessary
-const errorMiddleware = require("./middleware/errorMiddleware");
+// Import database utility
+const { connectDatabase } = require("./utils/database");
 
-// Import routes
-const blockchainRoutes = require("./routes/blockchainRoutes");
-const walletRoutes = require("./routes/walletRoutes");
-const faucetRoutes = require("./routes/faucetRoutes");
+// Middleware imports
+const { generalRateLimiter, rateLimitErrorHandler } = require("./middleware/authMiddleware");
+const { errorMiddleware } = require("./middleware/errorMiddleware");
+// Route imports
+const blockchainRoutes = require("./blockchain/routes/blockchainRoutes");
+const walletRoutes = require("./wallet/routes/walletRoutes");
+const faucetRoutes = require("./faucet/routes/faucetRoutes");
+const explorerRoutes = require("./explorer/routes/explorerRoutes");
+const transactionRoutes = require("./blockchain/routes/transactionRoutes");
+const nodeRoutes = require("./blockchain/routes/nodeRoutes");
 
-// Initialize the Express application and HTTP server
+// Get the node identifier from the command line arguments
+const nodeEnv = process.argv[2] || "default";  // Defaulting to 'default' if no argument is provided
+
+// Configuring dotenv to load a specific .env file based on the node identifier
+dotenv.config({ path: `.env.${nodeEnv}` });
+
+
+connectDatabase(); // Establish MongoDB connection
+
 const app = express();
 const server = http.createServer(app);
-
-// Secret key for JWT, used in Socket.IO authentication
-const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key_here";
-
-// Configure Socket.IO with the HTTP server, including CORS settings
 const io = socketIo(server, {
   cors: {
     origin: "*",
@@ -36,76 +43,36 @@ const io = socketIo(server, {
   },
 });
 
-// Use Morgan middleware for logging HTTP requests in the Apache combined format
+// Logger setup for HTTP requests
 app.use(
-  morgan("combined", { stream: { write: (message) => logger.info(message) } })
+  morgan("combined", { stream: { write: (message) => console.log(message) } })
 );
 
-// Middleware for parsing JSON and URL-encoded form data
+// Body parser middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
-// Routes for blockchain, wallet, and faucet APIs
+// Apply general rate limiting middleware to all requests
+app.use(generalRateLimiter());
+
+// Routes
 app.use("/api/blockchain", blockchainRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/faucet", faucetRoutes);
+app.use("/api/explorer", explorerRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/nodes", nodeRoutes);
 
-/**
- * Connect to MongoDB using the URI provided in the environment variables.
- */
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => logger.info("MongoDB connected"))
-  .catch((err) => {
-    logger.error("MongoDB connection error:", err);
-    process.exit(1); // Exit in a controlled manner on database connection failure
-  });
-
-/**
- * Middleware for JWT authentication in Socket.IO connections.
- * @param {Object} socket - The incoming socket connection.
- * @param {Function} next - Callback to pass control to the next middleware.
- */
-io.use((socket, next) => {
-  const token = socket.handshake.query.token;
-  if (!token) {
-    next(new Error("Authentication error: Token not provided"));
-  } else {
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
-      if (err) {
-        next(new Error("Authentication error: Invalid token"));
-      } else {
-        socket.decoded = decoded;
-        next();
-      }
-    });
-  }
-});
-
-/**
- * Handles new Socket.IO connections, setting up event listeners for custom events like 'syncRequest'.
- * @param {Object} socket - The socket instance for the connected client.
- */
-io.on("connection", (socket) => {
-  logger.info("A user connected", { socketId: socket.id });
-
-  socket.emit("welcome", "Welcome to the blockchain network!");
-
-  socket.on("syncRequest", (data) => {
-    logger.info("Sync request received", { data });
-  });
-
-  socket.on("disconnect", () => {
-    logger.info("User disconnected", { socketId: socket.id });
-  });
-});
-
-// Error handling middleware, placed after all route handlers
+// Error handling middleware for rate limits and general errors
+app.use(rateLimitErrorHandler);
 app.use(errorMiddleware);
 
-// Start the server on the configured port
+// Socket.IO configuration
+io.on("connection", (socket) => {
+  console.log(`A user connected with socket id: ${socket.id}`);
+  socket.on("disconnect", () => console.log(`User disconnected: ${socket.id}`));
+});
+
+// Server start
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

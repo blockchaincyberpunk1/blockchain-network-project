@@ -1,65 +1,50 @@
 /**
- * Handles interaction with the mining operations on the blockchain miner frontend.
+ * @file miner.js
+ * @description Handles mining requests to the blockchain backend, including initiating the mining process
+ * and displaying the results or errors to the user.
  */
 
-// Define API endpoints or paths as needed
-const API_BASE_URL = '/api/blockchain'; // Adjust this base URL as per your backend routing structure
+document.addEventListener("DOMContentLoaded", function () {
+  const mineButton = document.getElementById("mineButton");
+  const outputArea = document.getElementById("output");
 
-/**
- * Initializes event listeners and UI components necessary for mining operations.
- */
-function init() {
-    document.getElementById('startMining').addEventListener('click', startMining);
-    document.getElementById('stopMining').addEventListener('click', stopMining);
-}
+  /**
+   * Initiates mining on the blockchain network by sending a request to the backend.
+   * @param {Event} event - The event object from the form submission.
+   */
+  function handleMining(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
 
-/**
- * Initiates mining operations by sending a request to the backend and updates the UI accordingly.
- */
-function startMining() {
-    updateMiningStatus('Mining started...');
+    // Disable the button to prevent multiple requests
+    mineButton.disabled = true;
+    mineButton.textContent = "Mining...";
 
-    // Example request to start mining - adjust URL/path as needed
-    fetch(`${API_BASE_URL}/mine`, { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            updateMiningStatus('Mining completed.');
-            addMinedBlockToList(data.block);
-        })
-        .catch(error => {
-            console.error('Error starting mining:', error);
-            updateMiningStatus('Mining failed.');
-        });
-}
+    // Clear previous outputs
+    outputArea.textContent = "";
 
-/**
- * Stops the ongoing mining operations by sending a stop command to the backend. Updates the UI to reflect this action.
- */
-function stopMining() {
-    // Here you would send a request to your backend to stop mining if your backend supports it
-    // For demonstration, we're just updating the status
-    updateMiningStatus('Mining stopped.');
-}
+    // Call the backend to initiate mining
+    blockchainAPI
+      .mineBlocks()
+      .then((response) => {
+        if (response.success) {
+          outputArea.textContent = `Mining successful! New block added to the blockchain.`;
+        } else {
+          throw new Error(
+            response.message || "Unknown error occurred during mining."
+          );
+        }
+      })
+      .catch((error) => {
+        outputArea.textContent = `Error: ${error.message}`;
+        console.error("Mining failed:", error);
+      })
+      .finally(() => {
+        // Re-enable the button after the request is complete
+        mineButton.disabled = false;
+        mineButton.textContent = "Start Mining";
+      });
+  }
 
-/**
- * Updates the mining status on the UI.
- * @param {string} status - The mining status message to display.
- */
-function updateMiningStatus(status) {
-    document.getElementById('miningStatus').textContent = status;
-}
-
-/**
- * Adds a newly mined block to the list of blocks on the UI.
- * @param {Object} block - The block object returned from the mining operation.
- */
-function addMinedBlockToList(block) {
-    const listElement = document.createElement('li');
-    listElement.classList.add('list-group-item');
-    // Adjust the displayed content as per your block structure
-    listElement.textContent = `Block #${block.index}: ${block.hash.substring(0, 20)}...`;
-    document.getElementById('minedBlocksList').appendChild(listElement);
-}
-
-// Initialize the script once the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', init);
+  // Add event listener to the mining button
+  mineButton.addEventListener("click", handleMining);
+});

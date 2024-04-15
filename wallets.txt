@@ -1,0 +1,32 @@
+
+
+{
+    "success": true,
+    "publicKey": "04e21dd2ea40413d18393b7f3c22a51e55c1ca9456e02e0b9a3c0e415b135d2a9d110ed6236e0ae6d062eb70753d36329773e29f5d847b3f9d9b2f98fe3f17c2b6",
+    "privateKey": "29580c8c1ecdfd1f2556d664b3e59beb02e69c729c40198e50caef9716839448",
+    "message": "Wallet created successfully."
+}
+
+
+{
+    "success": true,
+    "publicKey": "04ae619269e81c9a45f6e9d99b777ba0c5d0b0779803deaf418e7ae5e7c2af8d4f58a807b09414521c247fe66e402125c51c9b3fd7d9525a7cc57464ad2b1f52d2",
+    "privateKey": "b09f6b6a5509600f37d62e449eab9bf13a9efaf35eae1facf7da9b3db96a0944",
+    "message": "Wallet created successfully."
+}
+
+
+{
+    "success": true,
+    "publicKey": "046d97399e73236961d1984eb17fd83554ab30448d3efc3749b4fca415501981cdc9cecec27daab6edb0753e60505f9bbf4d3d3a8b917398267732302b3671962b",
+    "privateKey": "e0da3056b6304dedd7885de730df69a0007a23e1273e0bac8fd566b39b077b87",
+    "message": "Wallet created successfully."
+}
+
+Faucet Wallet
+{
+    "success": true,
+    "publicKey": "0424821e7550f331fd566d54b38a1c941f1954cabd88ef908868dc878ff41d3a844f7d4032b31bbe857050dea6f4acfbba79ecc6f9b80fc38e5e9e1b0378581269",
+    "privateKey": "f3c0300c1bca4e6ec622669bdd564cd9d754f87b7dbd4d0728eb57c79ff07b81",
+    "message": "Wallet created successfully."
+}
